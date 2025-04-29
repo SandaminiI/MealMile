@@ -51,7 +51,7 @@ const HomePage = () => {
   return (
     <Layout>
       <div style={{ padding: '20px' }}>
-        <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Menu Items</h1>
+        {/* <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Menu Items</h1> */}
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <input
             type="text"
