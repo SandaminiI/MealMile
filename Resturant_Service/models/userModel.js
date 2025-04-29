@@ -42,9 +42,13 @@ const userSchema = new mongoose.Schema({
     },
     role:{
         type:Number,
-        enum:[ 0 , 1 , 2 ],
-        default:0 // 0-customer, 1-admin, 2- restaurant
-    }
+        enum:[ 0 , 1 , 2 , 3],
+        default:0 // 0-customer, 1-admin, 2- restaurant, 3-driver
+    },
+    DriverId: { 
+        type: String, 
+        default: undefined 
+    },
 },{timestamps:true});
 
 export default mongoose.model('users',userSchema);

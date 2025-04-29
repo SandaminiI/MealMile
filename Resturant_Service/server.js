@@ -6,6 +6,7 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/authRoute.js';
 import cookieParser from 'cookie-parser';
 import menuRoutes from './routes/menuRoute.js';
+import cors from 'cors';
 
 //config env
 dotenv.config();
@@ -16,10 +17,17 @@ connectDB();
 //rest object
 const app = express();
 
+const corsOptions = {
+    origin: 'http://localhost:3000', // Allow your frontend domain
+    credentials: true, // Allow credentials (cookies)
+};
+
 //middelware
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cookieParser());
+// app.use(cors());
+app.use(cors(corsOptions));
 
 //routes
 app.use('/api/v1/auth',authRoutes);

@@ -23,7 +23,8 @@ const menuItemSchema = new mongoose.Schema({
         trim: true
     },
     image: {
-        type: String // image URL or path
+        data: Buffer,
+    contentType: String
     },
     isAvailable: {
         type: Boolean,

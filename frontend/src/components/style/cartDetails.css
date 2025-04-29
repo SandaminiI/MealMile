@@ -1,0 +1,136 @@
+/* cartDetails.css */
+
+/* General page styles */
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333333;
+    font-size: 24px;
+}
+
+h4 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+/* Wrapper to control the width and centering */
+.cart-content {
+    width: 60%; /* 3/5 of the screen width */
+    margin: 0 auto; /* Centers the content */
+    padding: 20px;
+}
+
+/* Styling for the table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+thead {
+    background-color: #f5f5f5;
+}
+
+th, td {
+    padding: 16px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+}
+
+th {
+    color: #555555;
+    font-weight: 600;
+}
+
+/* Styling the quantity input field */
+td input[type="number"] {
+    width: 60px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+td input[type="number"]:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+/* Styling for the trash icon (delete item) */
+td .fa-trash {
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+td .fa-trash:hover {
+    color: #d32f2f;
+}
+
+/* Total amount styling */
+.total {
+    text-align: right;
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333333;
+}
+
+/* Delivery Address and Place Order Section */
+.delivery-address {
+    margin-top: 20px;
+}
+
+/* Styling for the delivery address text area */
+.delivery-address textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    resize: none;
+}
+
+/* Button for placing the order */
+.place-order-btn {
+    width: 100%;  /* Make the button span the full width */
+    padding: 12px;
+    margin-top: 20px;
+    background-color: #BF3131;  /* Button color */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for the button */
+.place-order-btn:hover {
+    background-color: #7D0A0A;  /* Darker shade for hover effect */
+}
+
+/* Media Queries for responsive design */
+@media (max-width: 768px) {
+    /* Adjust table and text size on smaller screens */
+    th, td {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .total {
+        font-size: 18px;
+    }
+
+    .cart-content {
+        width: 90%; /* 3/5 may be too wide on smaller screens, so we set it to 90% on mobile */
+    }
+
+    button {
+        font-size: 14px;  /* Smaller font for the button on smaller screens */
+        padding: 10px;
+    }
+}

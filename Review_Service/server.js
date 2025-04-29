@@ -7,7 +7,7 @@ import reviewRoutes from './routes/reviewRoutes.js';
 dotenv.config(); // ⬅️ Make sure this is at the top!
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 8095;
 const MONGO_URI = process.env.MONGO_URL; // ⬅️ Use correct env variable
 
 app.use(cors());

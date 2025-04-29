@@ -1,0 +1,66 @@
+services:
+  # user_service:
+  #   build: ./backend/user_service
+  #   container_name: user_service
+  #   env_file: ./backend/user_service/.env
+  #   ports: ["5000:5000"]
+  #   networks: [app-net]
+
+  resturant_service:
+    build: ./resturant_service
+    container_name: resturant_service
+    env_file: ./Resturant_Service/.env
+    ports: ["8086:8086"]
+    depends_on: []
+    networks: [app-net]
+
+  order_service:
+    build: ./order_service
+    container_name: order_service
+    env_file: ./Order_Service/.env
+    ports: ["8089:8089"]
+    depends_on: [resturant_service]
+    networks: [app-net]
+
+  payment_service:
+    build: ./payment_service
+    container_name: payment_service
+    env_file: ./Payment_Service/.env
+    ports: ["8087:8087"]
+    depends_on: [resturant_service, order_service]
+    networks: [app-net]
+
+  delivery_service:
+    build: ./delivery_service
+    container_name: delivery_service
+    env_file: ./Delivery_Service/.env
+    ports: ["8090:8090"]
+    depends_on: [resturant_service, payment_service, order_service]
+    networks: [app-net]
+
+  review_service:
+    build: ./review_service
+    container_name: review_service
+    env_file: ./Review_Service/.env
+    ports: ["8095:8095"]
+    depends_on: [resturant_service, order_service]
+    networks: [app-net]
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports: ["3000:3000"]
+    volumes: [./frontend:/app, /app/node_modules]
+    depends_on:
+      [
+        resturant_service,
+        order_service,
+        payment_service,
+        delivery_service,
+        review_service,
+      ]
+    networks: [app-net]
+
+networks:
+  app-net:
+    driver: bridge

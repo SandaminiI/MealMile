@@ -1,0 +1,170 @@
+.orders-content {
+    padding: 20px;
+}
+
+.orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.order-card {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.order-card:hover {
+    transform: translateY(-5px);
+}
+
+.order-card p {
+    margin: 8px 0;
+}
+
+.highlight {
+    color: #D32F2F;
+    font-weight: bold;
+}
+
+.status {
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 5px;
+}
+
+.status.pending {
+    background-color: #ffe0b2;
+    color: #ef6c00;
+}
+
+.status.confirmed {
+    background-color: #c8e6c9;
+    color: #2e7d32;
+}
+
+.status.preparing {
+    background-color: #fff9c4;
+    color: #f9a825;
+}
+
+.status.ready-for-delivery {
+    background-color: #b2dfdb;
+    color: #00796b;
+}
+
+.status.out-for-delivery {
+    background-color: #bbdefb;
+    color: #1976d2;
+}
+
+.status.delivered {
+    background-color: #c8e6c9;
+    color: #2e7d32;
+}
+
+.status.cancelled {
+    background-color: #ffcdd2;
+    color: #d32f2f;
+}
+
+.payment-status {
+    font-weight: bold;
+}
+
+.payment-status.paid {
+    color: green;
+}
+
+.payment-status.unpaid {
+    color: orange;
+}
+
+.payment-status.failed {
+    color: red;
+}
+
+.order-detail-body {
+    width: 60%; /* 3/5 of full screen */
+    margin: 50px auto; /* Center horizontally and add vertical spacing */
+    padding: 20px;
+    background-color: #fff; /* Optional: nice background */
+    border-radius: 8px; /* Optional: rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+}
+
+
+
+.order-status-progress {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 40px auto;
+    padding: 0 20px;
+    max-width: 900px;
+    position: relative;
+}
+
+.order-status-progress::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    right: 5%;
+    height: 6px;
+    background: #e0e0e0;
+    transform: translateY(-50%);
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.progress-fill {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    height: 6px;
+    background: linear-gradient(90deg, #BF3131, #E94B4B); /* lighter gradient */
+    transform: translateY(-50%);
+    border-radius: 10px;
+    z-index: 2;
+    transition: width 0.4s ease;
+}
+
+.step-container {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    z-index: 3;
+}
+
+.status-step {
+    width: 36px;
+    height: 36px;
+    background-color: #e0e0e0;
+    border: 3px solid white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0 auto;
+    color: #9e9e9e;
+    transition: background-color 0.4s, color 0.4s;
+}
+
+.status-step.active {
+    background-color: #BF3131;
+    color: white;
+}
+
+.status-label {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+}

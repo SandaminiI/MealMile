@@ -1,0 +1,82 @@
+.cart-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem;
+}
+
+.cart-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Important */
+    min-height: 250px; /* Optional: consistent card height */
+}
+
+.cart-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    background-color: #EEEEEE; /* Light grey on hover */
+}
+
+.cart-container h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: #333333;
+}
+
+.cart-items {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.cart-items p {
+    font-size: 0.95rem;
+    color: #666666;
+    margin: 0.2rem 0;
+}
+
+/* Total section */
+.cart-total {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end; /* Align to right */
+    align-items: center;
+    gap: 0.5rem; /* Small space between 'Total' and amount */
+    margin-top: auto; /* Push to bottom */
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    font-weight: bold;
+    font-size: 1.05rem;
+    color: #7D0A0A; /* Dark red */
+}
+
+
+h2 {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 2rem;
+    color: #222222;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+    .cart-list {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .cart-container {
+        padding: 1rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+}

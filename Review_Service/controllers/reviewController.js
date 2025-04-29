@@ -33,3 +33,21 @@ export const getRestaurantReviews = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+export const markReviewHelpful = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const review = await Review.findById(id);
+
+    if (!review) return res.status(404).json({ message: 'Review not found' });
+
+    review.helpfulCount += 1;
+    await review.save();
+
+    res.status(200).json({ message: 'Marked as helpful', helpfulCount: review.helpfulCount });
+  } catch (error) {
+    res.status(500).json({ message: 'Error marking helpful', error: error.message });
+  }
+};
+

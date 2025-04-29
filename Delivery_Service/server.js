@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import connectDB from './config/db.js';
 import deliveryRoutes from './routes/deliveryRoutes.js'
 import driverRoutes from './routes/driverRoutes.js'
+import cors from 'cors';
 
 //config env
 dotenv.config();
@@ -14,6 +15,7 @@ connectDB();
 
 //rest object
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 

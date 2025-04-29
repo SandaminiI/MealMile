@@ -1,7 +1,7 @@
 import userModel from "../models/userModel.js";
 import { comparePassword, hashPassword } from "../helpers/authHelpers.js";
 import JWT from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 //user register
 export const registerController = async(req,res) => {
@@ -35,8 +35,8 @@ export const registerController = async(req,res) => {
         const existingUser = await userModel.findOne({email})
         //exisiting user
         if(existingUser){
-            return res.status(200).send({
-                success:true,
+            return res.status(400).send({
+                success:false,
                 message:'Already Register please login',
             })
         }
@@ -45,7 +45,7 @@ export const registerController = async(req,res) => {
         const hashedPassword = await hashPassword(password)
         //save
         const user = await new userModel({name,email,address,password:hashedPassword,contactNumber,verifiedByAdmin,isAvailable, lat, lng, role}).save()
-        res.status(201).send({
+        res.status(200).send({
             success: true,
             message:'User Register successfully',
             user,
@@ -102,11 +102,16 @@ export const loginController = async (req,res) => {
         }).send({
             success:true, 
             message:'Login successfully',
-            user:{
-                name:user.name,
-                email:user.email,
+            user: {
+                name: user.name,
                 address: user.address,
+                email: user.email,
+                id: user.id,
+                role: user.role,
+                DriverId: user.DriverId,
             },
+            token,
+            role: user.role,
         });
 
     } catch (error) {
@@ -178,3 +183,19 @@ export const getAllUsers = async (req, res) => {
         })
     }
 }
+
+
+
+
+/** ======================================================================================== */
+
+// Controller function to get all restaurants - sandamnini
+export const getAllRestaurants = async (req, res) => {
+  try {
+    const restaurants = await userModel.find({ role: 2 }).select('_id name');
+    res.status(200).json({ success: true, restaurants });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to fetch restaurants' });
+  }
+};

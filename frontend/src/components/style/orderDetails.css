@@ -1,0 +1,61 @@
+/* orderDetails.css */
+
+/* General page styles */
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333333;
+    font-size: 24px;
+}
+
+h4 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+/* Wrapper to control the width and centering */
+.order-content {
+    width: 60%; /* 3/5 of the screen width */
+    margin: 0 auto; /* Centers the content */
+    padding: 20px;
+}
+
+/* Table styling if needed */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+thead {
+    background-color: #f5f5f5;
+}
+
+th, td {
+    padding: 16px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+}
+
+th {
+    color: #555555;
+    font-weight: 600;
+}
+
+/* Media Queries for responsive design */
+@media (max-width: 768px) {
+    th, td {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .order-content {
+        width: 90%;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
