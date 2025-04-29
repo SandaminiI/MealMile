@@ -131,7 +131,8 @@ const Cart = () => {
                     phoneNo,
                     deliveryAddress,
                     lat: markerPosition.lat,
-                    lng: markerPosition.lng
+                    lng: markerPosition.lng,
+                    totalAmount: cartDetails.totalAmount
                 }),
             });
 
@@ -227,7 +228,13 @@ const Cart = () => {
                                 type="text"
                                 placeholder="Enter your phone number"
                                 value={phoneNo}
-                                onChange={(e) => setPhoneNo(e.target.value)}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    // Allow only digits and limit to 10 characters
+                                    if (/^\d{0,10}$/.test(value)) {
+                                        setPhoneNo(value);
+                                    }
+                                }}
                                 style={{
                                     width: '100%',
                                     padding: '10px',

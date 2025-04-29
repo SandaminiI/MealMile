@@ -6,11 +6,29 @@ import '../../components/style/orders.css';
 const Orders = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [restaurantMap, setRestaurantMap] = useState({});
     const navigate = useNavigate();
 
-    // const customer = JSON.parse(localStorage.getItem('user')); // ✅ get logged in user
-    // const cid = customer?._id;
-    const cid = 'cus001';
+    const userInfo = JSON.parse(localStorage.getItem('auth'));
+    const cid = userInfo?.user?.id;
+
+    const fetchRestaurantName = async (rid) => {
+        if (restaurantMap[rid]) return restaurantMap[rid]; // Already cached
+
+        try {
+            const res = await fetch(`http://localhost:8086/api/v1/auth/getSingleUser/${rid}`);
+            if (!res.ok) throw new Error(`Failed to fetch restaurant ${rid}`);
+            const data = await res.json();
+            const name = data.user?.name || 'Unknown Restaurant';
+
+            setRestaurantMap(prev => ({ ...prev, [rid]: name }));
+            return name;
+        } catch (error) {
+            console.error(error);
+            setRestaurantMap(prev => ({ ...prev, [rid]: 'Unknown Restaurant' }));
+            return 'Unknown Restaurant';
+        }
+    };
 
     const fetchOrders = async () => {
         if (!cid) {
@@ -21,10 +39,14 @@ const Orders = () => {
 
         try {
             const res = await fetch(`http://localhost:8089/api/orders/${cid}`);
-            if (!res.ok) {
-                throw new Error('Failed to fetch orders');
-            }
+            if (!res.ok) throw new Error('Failed to fetch orders');
+
             const data = await res.json();
+
+            // Fetch all unique restaurant names
+            const uniqueRids = [...new Set(data.map(order => order.restaurantId))];
+            await Promise.all(uniqueRids.map(fetchRestaurantName));
+
             setOrders(data);
         } catch (error) {
             console.error(error.message);
@@ -62,7 +84,7 @@ const Orders = () => {
                                 <p><strong>Order ID:</strong> {order._id}</p>
                                 <p><strong>Phone Number:</strong> {order.phoneNo}</p>
                                 <p><strong>Delivery Address:</strong> {order.deliveryAddress}</p>
-                                <p><strong>Restaurant ID:</strong> <span className="highlight">{order.restaurantId}</span></p>
+                                <p><strong>Restaurant:</strong> <span className="highlight">{restaurantMap[order.restaurantId] || 'Loading...'}</span></p>
                                 <p><strong>Total Amount:</strong> <span className="highlight">Rs. {order.totalAmount?.toFixed(2)}</span></p>
                                 <p><strong>Status:</strong> <span className={`status ${order.status.toLowerCase().replace(/\s/g, '-')}`}>{order.status}</span></p>
                                 <p><strong>Payment Status:</strong> <span className={`payment-status ${order.paymentStatus.toLowerCase()}`}>{order.paymentStatus}</span></p>

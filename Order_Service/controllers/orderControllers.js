@@ -24,44 +24,44 @@ const getOrders = asyncHandler(async (req, res) => {
 
 // @desc Place a new order
 // @route POST /api/orders/:cartId
-const createOrder = asyncHandler(async (req, res) => {
-  const { cartId } = req.params;
-  const { phoneNo, deliveryAddress, lat, lng } = req.body;
+const createOrder = asyncHandler(async(req,res) => {
+    const {cartId} = req.params;
+    const {phoneNo, deliveryAddress, lat, lng, totalAmount} = req.body;
 
-  if (!cartId || !phoneNo || !deliveryAddress) {
-    res.status(400);
-    throw new Error("cartId, phoneNo and deliveryAddress are required");
-  }
+    if(!cartId, !phoneNo, !deliveryAddress || totalAmount == null ){
+        res.status(400);
+        throw new Error("cartId, phoneNo and deliveryAddress are required");
+    }
 
-  const cart = await Cart.findById(cartId);
+    const cart = await Cart.findById(cartId);
 
-  if (!cart) {
-    res.status(404);
-    throw new Error("Cart not found");
-  }
+    if(!cart){
+        res.status(404);
+        throw new Error("Cart not found");
+    }
 
-  const order = new Order({
-    cartId: cart._id,
-    customerId: cart.customerId,
-    restaurantId: cart.restaurantId,
-    items: cart.items,
-    totalAmount: cart.totalAmount,
-    phoneNo: phoneNo,
-    deliveryAddress: deliveryAddress,
-    lat: lat,
-    lng: lng,
-    status: "Pending",
-    paymentStatus: "Unpaid",
-  });
+    const order = new Order({
+        cartId: cart._id,
+        customerId: cart.customerId,
+        restaurantId: cart.restaurantId,
+        items: cart.items,
+        totalAmount: totalAmount,
+        phoneNo: phoneNo,
+        deliveryAddress: deliveryAddress,
+        lat: lat,
+        lng: lng,
+        status: "Pending",
+        paymentStatus: "Unpaid"
+    });
 
-  await order.save();
+    await order.save();
 
-  await Cart.deleteOne({ _id: cart._id });
+    await Cart.deleteOne({_id: cart._id});
 
-  res.status(201).json({
-    message: "Order created successfully",
-    order,
-  });
+    res.status(201).json({
+        message: "Order created successfully",
+        order
+    });
 });
 
 // @desc View an order
