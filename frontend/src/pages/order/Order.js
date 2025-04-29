@@ -28,6 +28,15 @@ const Order = () => {
         fetchOrder();
     }, [id]);
 
+    const statusSteps = [
+        'pending',
+        'confirmed',
+        'preparing',
+        'ready-for-delivery',
+        'out-for-delivery',
+        'delivered'
+    ];
+
     if (loading) {
         return (
             <Layout>
@@ -48,16 +57,38 @@ const Order = () => {
         );
     }
 
+    const currentStatusIndex = statusSteps.indexOf(order.status.toLowerCase().replace(/\s/g, '-'));
+
     return (
         <Layout>
-            <div className="orders-content">
+            <div className="order-detail-body">
                 <h2>Order Details</h2>
-                <p><strong>Order ID:</strong> {order._id}</p>
+
+                <p><strong>Restaurant ID:</strong> <span className="highlight">{order.restaurantId}</span></p>
                 <p><strong>Phone Number:</strong> {order.phoneNo}</p>
                 <p><strong>Delivery Address:</strong> {order.deliveryAddress}</p>
-                <p><strong>Restaurant ID:</strong> <span className="highlight">{order.restaurantId}</span></p>
                 <p><strong>Total Amount:</strong> <span className="highlight">Rs. {order.totalAmount?.toFixed(2)}</span></p>
                 <p><strong>Status:</strong> <span className={`status ${order.status.toLowerCase().replace(/\s/g, '-')}`}>{order.status}</span></p>
+
+                {/* Process Line */}
+                <div className="order-status-progress">
+                    <div
+                        className="progress-fill"
+                        style={{
+                            width: `${(currentStatusIndex / (statusSteps.length - 1)) * 90}%`
+                        }}
+                    ></div>
+
+                    {statusSteps.map((step, index) => (
+                        <div key={index} className="step-container">
+                            <div className={`status-step ${index <= currentStatusIndex ? 'active' : ''}`}>
+                                {index + 1}
+                            </div>
+                            <div className="status-label">{step.replace(/-/g, ' ')}</div>
+                        </div>
+                    ))}
+                </div>
+
                 <p><strong>Payment Status:</strong> <span className={`payment-status ${order.paymentStatus.toLowerCase()}`}>{order.paymentStatus}</span></p>
                 <p><strong>Ordered At:</strong> {new Date(order.createdAt).toLocaleString()}</p>
 

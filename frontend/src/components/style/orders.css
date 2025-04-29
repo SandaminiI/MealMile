@@ -86,3 +86,85 @@
 .payment-status.failed {
     color: red;
 }
+
+.order-detail-body {
+    width: 60%; /* 3/5 of full screen */
+    margin: 50px auto; /* Center horizontally and add vertical spacing */
+    padding: 20px;
+    background-color: #fff; /* Optional: nice background */
+    border-radius: 8px; /* Optional: rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+}
+
+
+
+.order-status-progress {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 40px auto;
+    padding: 0 20px;
+    max-width: 900px;
+    position: relative;
+}
+
+.order-status-progress::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    right: 5%;
+    height: 6px;
+    background: #e0e0e0;
+    transform: translateY(-50%);
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.progress-fill {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    height: 6px;
+    background: linear-gradient(90deg, #BF3131, #E94B4B); /* lighter gradient */
+    transform: translateY(-50%);
+    border-radius: 10px;
+    z-index: 2;
+    transition: width 0.4s ease;
+}
+
+.step-container {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    z-index: 3;
+}
+
+.status-step {
+    width: 36px;
+    height: 36px;
+    background-color: #e0e0e0;
+    border: 3px solid white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0 auto;
+    color: #9e9e9e;
+    transition: background-color 0.4s, color 0.4s;
+}
+
+.status-step.active {
+    background-color: #BF3131;
+    color: white;
+}
+
+.status-label {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+}
