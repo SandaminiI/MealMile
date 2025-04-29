@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { useNavigate } from 'react-router-dom';
+
+
+const containerStyle = {
+  width: '100%',
+  height: '400px',
+};
+
+const DRIVER_ID = '680b9a5f1ca12da0c207f03a'; // Replace with dynamic if needed
 
 const DriverDashboard = () => {
+  const navigate = useNavigate();
   const [driver, setDriver] = useState(null);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -10,10 +21,9 @@ const DriverDashboard = () => {
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const [address, setAddress] = useState('');
+  const [markerPosition, setMarkerPosition] = useState({ lat: 0, lng: 0 });
 
-  const DRIVER_ID = '680b9a5f1ca12da0c207f03a';
-
-  // Fetch driver data
+  // --- Fetch driver data initially
   useEffect(() => {
     const fetchDriver = async () => {
       try {
@@ -24,10 +34,17 @@ const DriverDashboard = () => {
         setName(myDriver.name || '');
         setPhone(myDriver.phone || '');
         setEmail(myDriver.email || '');
-        setIsAvailable(myDriver.isAvailable || false);
+        setIsAvailable(myDriver.isAvailable !== undefined ? myDriver.isAvailable : true);
         setLatitude(myDriver.currentLocation?.lat || '');
         setLongitude(myDriver.currentLocation?.lng || '');
         setAddress(myDriver.currentLocation?.address || '');
+
+        if (myDriver.currentLocation?.lat && myDriver.currentLocation?.lng) {
+          setMarkerPosition({
+            lat: parseFloat(myDriver.currentLocation.lat),
+            lng: parseFloat(myDriver.currentLocation.lng),
+          });
+        }
       } catch (err) {
         console.error('Error fetching driver:', err);
       }
@@ -36,7 +53,7 @@ const DriverDashboard = () => {
     fetchDriver();
   }, []);
 
-  // Update driver data
+  // --- Handle Update
   const handleUpdate = async (e) => {
     e.preventDefault();
     if (!driver) {
@@ -51,9 +68,9 @@ const DriverDashboard = () => {
         email,
         isAvailable,
         currentLocation: {
-          lat: latitude,
-          lng: longitude,
-          address: address,
+          lat: parseFloat(latitude),
+          lng: parseFloat(longitude),
+          address,
         },
       });
 
@@ -64,13 +81,53 @@ const DriverDashboard = () => {
     }
   };
 
+  // --- Handle Map Click
+  const handleMapClick = (e) => {
+    const lat = e.latLng.lat();
+    const lng = e.latLng.lng();
+    setLatitude(lat);
+    setLongitude(lng);
+    setMarkerPosition({ lat, lng });
+  };
+
+  // --- Handle Address change and auto-locate lat/lng
+  const handleAddressChange = async (e) => {
+    const newAddress = e.target.value;
+    setAddress(newAddress);
+
+    if (!newAddress) return;
+
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json`,
+        {
+          params: {
+            address: newAddress,
+            key: 'AIzaSyBgBbw-VnWQAriox72BrPyJRyIj0qIpuOc', // Your API Key
+          },
+        }
+      );
+
+      if (response.data.status === 'OK') {
+        const location = response.data.results[0].geometry.location;
+        setLatitude(location.lat);
+        setLongitude(location.lng);
+        setMarkerPosition({ lat: location.lat, lng: location.lng });
+      } else {
+        console.error('Geocode was not successful:', response.data.status);
+      }
+    } catch (error) {
+      console.error('Error geocoding address:', error);
+    }
+  };
+
   return (
     <div style={styles.profileContainer}>
       <div style={styles.sidebar}>
-        <button style={{ ...styles.sidebarBtn, ...styles.activeBtn }}>My Profile</button>
-        <button style={styles.sidebarBtn}>Delivery Requests</button>
-        <button style={styles.sidebarBtn}>Tracking Updates</button>
-        <button style={styles.sidebarBtn}>Delivery History</button>
+        <button style={{ ...styles.sidebarBtn, ...styles.activeBtn }} onClick={() => navigate('/')}>My Profile</button>
+        <button style={styles.sidebarBtn} onClick={() => navigate('/deliveryRequests')}>Delivery Requests</button>
+        <button style={styles.sidebarBtn} onClick={() => navigate('/trackingUpdates')}>Tracking Updates</button>
+        <button style={styles.sidebarBtn} onClick={() => navigate('/deliveryHistory')}>Delivery History</button>
         <button style={{ ...styles.sidebarBtn, ...styles.logoutBtn }}>Logout</button>
         <div>
           <img
@@ -84,6 +141,7 @@ const DriverDashboard = () => {
       <div style={styles.detailsSection}>
         <h1>My Details</h1>
         <form style={styles.detailsForm} onSubmit={handleUpdate}>
+          {/* Name */}
           <div style={styles.inputGroup}>
             <label style={styles.inputLabel}>Name</label>
             <input
@@ -94,6 +152,7 @@ const DriverDashboard = () => {
             />
           </div>
 
+          {/* Phone */}
           <div style={styles.inputGroup}>
             <label style={styles.inputLabel}>Phone</label>
             <input
@@ -104,6 +163,7 @@ const DriverDashboard = () => {
             />
           </div>
 
+          {/* Email */}
           <div style={styles.inputGroup}>
             <label style={styles.inputLabel}>Email</label>
             <input
@@ -114,8 +174,7 @@ const DriverDashboard = () => {
             />
           </div>
 
-          {/* Removed Password Field */}
-
+          {/* Availability */}
           <div style={styles.availabilityGroup}>
             <label style={styles.inputLabel}>Are You Available for Delivery?</label>
             <div style={styles.radioGroup}>
@@ -140,8 +199,23 @@ const DriverDashboard = () => {
             </div>
           </div>
 
+          {/* Location Section */}
           <div style={styles.locationSection}>
             <h3>Update Your Current Location</h3>
+
+            {/* Address Input */}
+            <div style={{ ...styles.inputGroup, marginTop: '10px' }}>
+              <label style={styles.inputLabel}>Address</label>
+              <input
+                type="text"
+                style={styles.inputField}
+                value={address}
+                onChange={handleAddressChange}
+                placeholder="Enter your current address"
+              />
+            </div>
+
+            {/* Lat / Lng Inputs */}
             <div style={styles.coordinateGroup}>
               <div style={styles.inputGroup}>
                 <label style={styles.inputLabel}>Latitude</label>
@@ -163,43 +237,37 @@ const DriverDashboard = () => {
                 />
               </div>
             </div>
-
-            <div style={{ ...styles.inputGroup, marginTop: '20px' }}>
-              <label style={styles.inputLabel}>Address</label>
-              <input
-                type="text"
-                style={styles.inputField}
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="Enter your current address"
-              />
-            </div>
           </div>
 
+          {/* Submit Button */}
           <button style={styles.updateBtn} type="submit">
             Update
           </button>
         </form>
 
+        {/* Google Map */}
         <div style={styles.mapContainer}>
-          <iframe
-            title="Location Map"
-            src={`https://maps.google.com/maps?q=${latitude},${longitude}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
-            style={styles.mapIframe}
-            frameBorder="0"
-            allowFullScreen
-          ></iframe>
+          <LoadScript googleMapsApiKey="AIzaSyBgBbw-VnWQAriox72BrPyJRyIj0qIpuOc">
+            <GoogleMap
+              mapContainerStyle={containerStyle}
+              center={markerPosition}
+              zoom={15}
+              onClick={handleMapClick}
+            >
+              <Marker position={markerPosition} />
+            </GoogleMap>
+          </LoadScript>
         </div>
       </div>
     </div>
   );
 };
 
-// --- STYLES ---
+// --- Styles ---
 const styles = {
   profileContainer: {
     display: 'flex',
-    minHeight: '50vh',
+    minHeight: '100vh',
     backgroundColor: '#e0f7f9',
   },
   sidebar: {
@@ -285,12 +353,6 @@ const styles = {
   },
   mapContainer: {
     marginTop: '20px',
-  },
-  mapIframe: {
-    width: '100%',
-    height: '300px',
-    border: 'none',
-    borderRadius: '8px',
   },
 };
 

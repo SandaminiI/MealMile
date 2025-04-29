@@ -7,7 +7,7 @@ import {
   respondToDeliveryRequestController,
   getAllDeliveryRequestsController,
   getDriverByIdController,
-  updateDriverDetailsController,
+  updateDriverController,
 } from '../Controllers/DriverController.js';
 
 const router = express.Router();
@@ -34,7 +34,7 @@ router.get('/delivery-requests/:driverId', getAllDeliveryRequestsController);
 router.get('/get/:driverId', getDriverByIdController);
 
 // Update driver details
-router.put('/update/:id', updateDriverDetailsController);
+router.put('/update/:id', updateDriverController);
 
 
 
