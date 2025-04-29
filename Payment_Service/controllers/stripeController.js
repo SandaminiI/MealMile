@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 import dotenv from 'dotenv';
 import axios from 'axios'; // Add this to call Order Service
 dotenv.config();
+import { sendReceiptEmail } from '../services/emailService.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -39,35 +40,48 @@ export const createStripeSession = async (req, res) => {
 };
 
 
-
 export const handleStripeWebhook = async (req, res) => {
   let event;
 
   try {
     event = JSON.parse(req.body);
   } catch (err) {
-    console.error('❌ Webhook error while parsing:', err.message);
+    console.error('❌ Webhook parsing failed:', err.message);
     return res.sendStatus(400);
   }
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    const orderId = session.metadata.order_id; // Get the orderId from Stripe metadata
-    console.log('✅ Payment successful for Order ID:', orderId);
+    const orderId = session.metadata?.order_id;
+
+    if (!orderId) {
+      console.error('❌ Missing order ID in session metadata.');
+      return res.sendStatus(400);
+    }
 
     try {
-      // Update Order Service: Mark payment as "Paid"
-      const response = await axios.patch(`http://order_service:8089/api/orders/order/${orderId}/paymentstatus`, {
+      // 1. Mark order as paid
+      await axios.patch(`http://order_service:8089/api/orders/order/${orderId}/paymentstatus`, {
         paymentStatus: 'Paid'
       });
 
-      console.log(`✅ Successfully updated Order ${orderId} to Paid.`);
+      console.log(`✅ Order ${orderId} marked as Paid`);
 
-    } catch (error) {
-      console.error('❌ Failed to update payment status in Order Service:', error.message);
+      // 2. Retrieve updated order details
+      const { data: order } = await axios.get(`http://order_service:8089/api/orders/order/${orderId}`);
+
+      // 3. Send receipt email
+      if (session.customer_email && order) {
+        await sendReceiptEmail(session.customer_email, order);
+        console.log(`✅ Email sent to ${session.customer_email}`);
+      } else {
+        console.warn('⚠️ Missing customer email or order data. Email not sent.');
+      }
+
+    } catch (err) {
+      console.error('❌ Error updating order or sending email:', err.message);
     }
   }
 
   res.status(200).send('Webhook received');
 };
-
